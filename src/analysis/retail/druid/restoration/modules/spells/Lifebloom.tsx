@@ -6,7 +6,7 @@ import Analyzer, { Options, SELECTED_PLAYER } from 'parser/core/Analyzer';
 import Events, { ApplyBuffEvent, RefreshBuffEvent, RemoveBuffEvent } from 'parser/core/Events';
 import { mergeTimePeriods, OpenTimePeriod } from 'parser/core/mergeTimePeriods';
 import Combatants from 'parser/shared/modules/Combatants';
-import uptimeBarSubStatistic, { SubPercentageStyle } from 'parser/ui/UptimeBarSubStatistic';
+import uptimeBarSubStatistic from 'parser/ui/UptimeBarSubStatistic';
 import { TALENTS_DRUID } from 'common/TALENTS';
 import { LIFEBLOOM_BUFFS } from 'analysis/retail/druid/restoration/constants';
 import { causedBloom } from 'analysis/retail/druid/restoration/normalizers/CastLinkNormalizer';
@@ -15,7 +15,6 @@ import { explanationAndDataSubsection } from 'interface/guide/components/Explana
 import { GUIDE_CORE_EXPLANATION_PERCENT } from '../../Guide';
 
 const LB_COLOR = '#00bb44';
-const UNDERGROWTH_COLOR = '#dd5500';
 
 /**
  * Components related to Lifebloom and Lifebloom's uptime.
@@ -42,7 +41,6 @@ class Lifebloom extends Analyzer {
 
   constructor(options: Options) {
     super(options);
-    this.hasUndergrowth = this.selectedCombatant.hasTalent(TALENTS_DRUID.UNDERGROWTH_TALENT);
 
     this.addEventListener(
       Events.applybuff.by(SELECTED_PLAYER).spell(LIFEBLOOM_BUFFS),
@@ -141,7 +139,6 @@ class Lifebloom extends Analyzer {
   /** Guide subsection describing the proper usage of Lifebloom */
   get guideSubsection(): JSX.Element {
     const hasPhoto = this.selectedCombatant.hasTalent(TALENTS_DRUID.PHOTOSYNTHESIS_TALENT);
-    const hasUndergrowth = this.selectedCombatant.hasTalent(TALENTS_DRUID.UNDERGROWTH_TALENT);
     const hasVerdancy = this.selectedCombatant.hasTalent(TALENTS_DRUID.VERDANCY_TALENT);
     const selfUptimePercent = this.selfLifebloomUptime / this.owner.fightDuration;
     const othersUptimePercent = this.othersLifebloomUptime / this.owner.fightDuration;
@@ -152,15 +149,9 @@ class Lifebloom extends Analyzer {
           <b>
             <SpellLink spell={SPELLS.LIFEBLOOM_HOT_HEAL} />
           </b>{' '}
-          can only be active on {hasUndergrowth ? 'two targets' : 'one target'} at a time{' '}
-          {hasUndergrowth && (
-            <>
-              (due to <SpellLink spell={TALENTS_DRUID.UNDERGROWTH_TALENT} />)
-            </>
-          )}{' '}
-          and provides similar throughput to Rejuvenation. However, it causes{' '}
-          <SpellLink spell={SPELLS.CLEARCASTING_BUFF} /> procs and so is a big benefit to your mana
-          efficiency. You should aim for 100% Lifebloom uptime.
+          can only be active on {'one target'} at a time and provides similar throughput to
+          Rejuvenation. However, it causes <SpellLink spell={SPELLS.CLEARCASTING_BUFF} /> procs and
+          so is a big benefit to your mana efficiency. You should aim for 100% Lifebloom uptime.
         </p>
         {hasVerdancy && (
           <p>
@@ -193,13 +184,6 @@ class Lifebloom extends Analyzer {
               </>
             )}
             .
-            {hasUndergrowth && (
-              <>
-                {' '}
-                Remember that <SpellLink spell={TALENTS_DRUID.UNDERGROWTH_TALENT} /> allows two
-                lifeblooms, and both will benefit!
-              </>
-            )}
             <br />
             Total Uptime on <strong>Self: {formatPercentage(selfUptimePercent, 1)}%</strong> / on{' '}
             <strong>Others: {formatPercentage(othersUptimePercent, 1)}%</strong>
@@ -229,25 +213,11 @@ class Lifebloom extends Analyzer {
   }
 
   subStatistic() {
-    const subBars = [];
-    if (this.hasUndergrowth) {
-      subBars.push({
-        spells: [TALENTS_DRUID.UNDERGROWTH_TALENT],
-        uptimes: mergeTimePeriods(this.undergrowthUptimes, this.owner.currentTimestamp),
-        color: UNDERGROWTH_COLOR,
-      });
-    }
-
-    return uptimeBarSubStatistic(
-      this.owner.fight,
-      {
-        spells: [SPELLS.LIFEBLOOM_HOT_HEAL],
-        uptimes: mergeTimePeriods(this.lifebloomUptimes, this.owner.currentTimestamp),
-        color: LB_COLOR,
-      },
-      subBars,
-      SubPercentageStyle.ABSOLUTE,
-    );
+    return uptimeBarSubStatistic(this.owner.fight, {
+      spells: [SPELLS.LIFEBLOOM_HOT_HEAL],
+      uptimes: mergeTimePeriods(this.lifebloomUptimes, this.owner.currentTimestamp),
+      color: LB_COLOR,
+    });
   }
 }
 

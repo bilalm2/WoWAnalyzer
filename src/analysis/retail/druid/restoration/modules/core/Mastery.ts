@@ -59,9 +59,7 @@ class Mastery extends Analyzer {
     this.extraLbStacks = this.selectedCombatant.hasTalent(TALENTS_DRUID.HARMONIOUS_BLOOMING_TALENT)
       ? HARMONIUS_BLOOMING_EXTRA_STACKS
       : 0;
-    this.lbBuffId = this.selectedCombatant.hasTalent(TALENTS_DRUID.UNDERGROWTH_TALENT)
-      ? SPELLS.LIFEBLOOM_UNDERGROWTH_HOT_HEAL.id
-      : SPELLS.LIFEBLOOM_HOT_HEAL.id;
+    this.lbBuffId = SPELLS.LIFEBLOOM_HOT_HEAL.id;
 
     // inits spellAttributions with an entry for each HoT that works with Mastery
     MASTERY_STACK_BUFF_IDS.forEach((id) => {

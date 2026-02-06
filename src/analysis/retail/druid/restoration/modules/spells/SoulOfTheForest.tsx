@@ -32,16 +32,10 @@ import { GUIDE_CORE_EXPLANATION_PERCENT } from '../../Guide';
 import { isConvoking } from 'analysis/retail/druid/shared/spells/ConvokeSpirits';
 import CastSummaryAndBreakdown from 'interface/guide/components/CastSummaryAndBreakdown';
 
-const SOTF_SPELLS = [
-  SPELLS.REJUVENATION,
-  SPELLS.REJUVENATION_GERMINATION,
-  SPELLS.WILD_GROWTH,
-  SPELLS.REGROWTH,
-];
+const SOTF_SPELLS = [SPELLS.REJUVENATION, SPELLS.REJUVENATION_GERMINATION, SPELLS.REGROWTH];
 
 const REJUVENATION_HEALING_INCREASE = 1.5;
 const REGROWTH_HEALING_INCREASE = 1.5;
-const WILD_GROWTH_HEALING_INCREASE = 0.5;
 
 const debug = false;
 
@@ -71,17 +65,10 @@ class SoulOfTheForest extends Analyzer {
     hardcastUses: 0,
     convokeUses: 0,
   };
-  sotfWgInfo = {
-    boost: WILD_GROWTH_HEALING_INCREASE,
-    attribution: HotTrackerRestoDruid.getNewAttribution('SotF Wild Growth'),
-    hardcastUses: 0,
-    convokeUses: 0,
-  };
   sotfSpellInfo = {
     [SPELLS.REJUVENATION.id]: this.sotfRejuvInfo,
     [SPELLS.REJUVENATION_GERMINATION.id]: this.sotfRejuvInfo,
     [SPELLS.REGROWTH.id]: this.sotfRegrowthInfo,
-    [SPELLS.WILD_GROWTH.id]: this.sotfWgInfo,
   };
 
   lastTalliedSotF?: RemoveBuffEvent;
@@ -253,20 +240,12 @@ class SoulOfTheForest extends Analyzer {
     return this.sotfRegrowthInfo.hardcastUses;
   }
 
-  get wgHardcastUses() {
-    return this.sotfWgInfo.hardcastUses;
-  }
-
   get rejuvConvokeUses() {
     return this.sotfRejuvInfo.convokeUses;
   }
 
   get regrowthConvokeUses() {
     return this.sotfRegrowthInfo.convokeUses;
-  }
-
-  get wgConvokeUses() {
-    return this.sotfWgInfo.convokeUses;
   }
 
   get rejuvTotalUses() {
@@ -277,20 +256,12 @@ class SoulOfTheForest extends Analyzer {
     return this.regrowthHardcastUses + this.regrowthConvokeUses;
   }
 
-  get wgTotalUses() {
-    return this.wgHardcastUses + this.wgConvokeUses;
-  }
-
   get totalUses() {
-    return this.rejuvTotalUses + this.regrowthTotalUses + this.wgTotalUses;
+    return this.rejuvTotalUses + this.regrowthTotalUses;
   }
 
   get totalHealing() {
-    return (
-      this.sotfWgInfo.attribution.healing +
-      this.sotfRegrowthInfo.attribution.healing +
-      this.sotfRejuvInfo.attribution.healing
-    );
+    return this.sotfRegrowthInfo.attribution.healing + this.sotfRejuvInfo.attribution.healing;
   }
 
   /** Guide subsection describing the proper usage of Soul of the Forest */
@@ -300,9 +271,10 @@ class SoulOfTheForest extends Analyzer {
         <strong>
           <SpellLink spell={TALENTS_DRUID.SOUL_OF_THE_FOREST_RESTORATION_TALENT} />
         </strong>{' '}
-        procs are highest value consumed with <SpellLink spell={SPELLS.WILD_GROWTH} />, but{' '}
-        <SpellLink spell={SPELLS.REJUVENATION} /> or <SpellLink spell={SPELLS.REGROWTH} /> are
-        acceptable when one target needs big healing.{' '}
+        procs can be consumed with <SpellLink spell={SPELLS.REGROWTH} /> or
+        <SpellLink spell={SPELLS.REJUVENATION} />, ideally you should spend procs on{' '}
+        <SpellLink spell={SPELLS.REJUVENATION} />
+        while ramping and on <SpellLink spell={SPELLS.REGROWTH} /> post ramp.{' '}
         {this.selectedCombatant.hasTalent(TALENTS_DRUID.CONVOKE_THE_SPIRITS_TALENT) && (
           <>
             <SpellLink spell={SPELLS.CONVOKE_SPIRITS} /> can overwrite procs - always use your proc
@@ -318,7 +290,6 @@ class SoulOfTheForest extends Analyzer {
           spell={TALENTS_DRUID.SOUL_OF_THE_FOREST_RESTORATION_TALENT}
           castEntries={this.useEntries}
           usesInsteadOfCasts
-          goodExtraExplanation={<>used on Wild Growth</>}
           okExtraExplanation={<>used on Rejuvenation or Regrowth</>}
           badExtraExplanation={<>proc expired or was overwritten</>}
         />
@@ -371,14 +342,6 @@ class SoulOfTheForest extends Analyzer {
                   this.regrowthTotalUses,
                   this.regrowthHardcastUses,
                   this.sotfRegrowthInfo.attribution.healing,
-                )}
-              </li>
-              <li>
-                <SpellLink spell={SPELLS.WILD_GROWTH} />
-                {this._spellReportLine(
-                  this.wgTotalUses,
-                  this.wgHardcastUses,
-                  this.sotfWgInfo.attribution.healing,
                 )}
               </li>
             </ul>

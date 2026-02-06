@@ -113,23 +113,6 @@ const EVENT_LINKS: EventLink[] = [
     maximumLinks: 1,
   },
   {
-    linkRelation: FROM_OVERGROWTH,
-    reverseLinkRelation: APPLIED_HEAL,
-    linkingEventId: [
-      SPELLS.REJUVENATION.id,
-      SPELLS.REJUVENATION_GERMINATION.id,
-      SPELLS.REGROWTH.id,
-      SPELLS.WILD_GROWTH.id,
-      SPELLS.LIFEBLOOM_HOT_HEAL.id,
-      SPELLS.LIFEBLOOM_UNDERGROWTH_HOT_HEAL.id,
-    ],
-    linkingEventType: [EventType.ApplyBuff, EventType.RefreshBuff],
-    referencedEventId: TALENTS_DRUID.OVERGROWTH_TALENT.id,
-    referencedEventType: EventType.Cast,
-    forwardBufferMs: CAST_BUFFER_MS,
-    backwardBufferMs: CAST_BUFFER_MS,
-  },
-  {
     linkRelation: FROM_EXPIRING_LIFEBLOOM,
     reverseLinkRelation: CAUSED_BLOOM,
     linkingEventId: SPELLS.LIFEBLOOM_BLOOM_HEAL.id,
@@ -169,12 +152,18 @@ class CastLinkNormalizer extends EventLinkNormalizer {
 }
 
 /** Returns true iff the given buff application or heal can be matched back to a hardcast */
-export function isFromHardcast(event: AbilityEvent<any>): boolean {
+export function isFromHardcast(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  event: AbilityEvent<any>,
+): boolean {
   return HasRelatedEvent(event, FROM_HARDCAST);
 }
 
 /** Returns the hardcast event that caused this buff or heal, if there is one */
-export function getHardcast(event: AbilityEvent<any>): CastEvent | undefined {
+export function getHardcast(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  event: AbilityEvent<any>,
+): CastEvent | undefined {
   return GetRelatedEvents<CastEvent>(
     event,
     FROM_HARDCAST,

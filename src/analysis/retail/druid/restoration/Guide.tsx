@@ -29,8 +29,6 @@ export default function Guide({ modules, events, info }: GuideProps<typeof Comba
           modules.groveGuardians.guideSubsection}
         {info.combatant.hasTalent(TALENTS_DRUID.SOUL_OF_THE_FOREST_RESTORATION_TALENT) &&
           modules.soulOfTheForest.guideSubsection}
-        {info.combatant.hasTalent(TALENTS_DRUID.CENARION_WARD_TALENT) &&
-          modules.cenarionWard.guideSubsection}
       </Section>
       <Section title="Healing Cooldowns">
         <p>
@@ -120,8 +118,6 @@ function CooldownBreakdownSubsection({
       <p />
       {info.combatant.hasTalent(TALENTS_DRUID.CONVOKE_THE_SPIRITS_TALENT) &&
         modules.convokeSpirits.guideCastBreakdown}
-      {info.combatant.hasTalent(TALENTS_DRUID.FLOURISH_TALENT) &&
-        modules.flourish.guideCastBreakdown}
       {info.combatant.hasTalent(TALENTS_DRUID.INCARNATION_TREE_OF_LIFE_TALENT) &&
         modules.treeOfLife.guideCastBreakdown}
       {info.combatant.hasTalent(TALENTS_DRUID.TRANQUILITY_TALENT) &&

@@ -34,8 +34,8 @@ const REGROWTH_CONDITION = (linkingEvent: AnyEvent, referencedEvent: AnyEvent) =
       (link) =>
         link.relation === SOTF_BUFFS_HEAL &&
         (link.event.type === linkingEvent.type ||
-          (link.event as AbilityEvent<any>).ability.guid !==
-            (linkingEvent as AbilityEvent<any>).ability.guid),
+          (link.event as AbilityEvent<string>).ability.guid !==
+            (linkingEvent as AbilityEvent<string>).ability.guid),
     )
   );
 };
@@ -46,8 +46,8 @@ const WG_CONDITION = (linkingEvent: AnyEvent, referencedEvent: AnyEvent) =>
   !referencedEvent._linkedEvents.find(
     (link) =>
       link.relation === SOTF_BUFFS_HEAL &&
-      (link.event as AbilityEvent<any>).ability.guid !==
-        (linkingEvent as AbilityEvent<any>).ability.guid,
+      (link.event as AbilityEvent<string>).ability.guid !==
+        (linkingEvent as AbilityEvent<string>).ability.guid,
   );
 
 const EVENT_LINKS: EventLink[] = [
@@ -100,6 +100,7 @@ class SoulOfTheForestLinkNormalizer extends EventLinkNormalizer {
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function getSotfBuffs(event: RemoveBuffEvent): AbilityEvent<any>[] {
   return GetRelatedEvents(event, SOTF_BUFFS_HEAL, HasAbility);
 }

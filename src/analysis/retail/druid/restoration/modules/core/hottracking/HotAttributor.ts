@@ -1,11 +1,6 @@
 import SPELLS from 'common/SPELLS';
 import Analyzer, { Options, SELECTED_PLAYER } from 'parser/core/Analyzer';
-import Events, {
-  ApplyBuffEvent,
-  HealEvent,
-  RefreshBuffEvent,
-  TargettedEvent,
-} from 'parser/core/Events';
+import Events, { ApplyBuffEvent, HealEvent, RefreshBuffEvent } from 'parser/core/Events';
 import HotTracker, { Attribution } from 'parser/shared/modules/HotTracker';
 
 import { LIFEBLOOM_BUFFS, lifebloomSpell, REJUVENATION_BUFFS } from '../../../constants';
@@ -42,7 +37,6 @@ class HotAttributor extends Analyzer {
   hotTracker!: HotTrackerRestoDruid;
   convokeSpirits!: ConvokeSpiritsResto;
 
-  hasOvergrowth: boolean;
   hasPowerOfTheArchdruid: boolean;
   hasRampantGrowth: boolean;
   hasConvoke: boolean;
@@ -71,7 +65,6 @@ class HotAttributor extends Analyzer {
   constructor(options: Options) {
     super(options);
 
-    this.hasOvergrowth = this.selectedCombatant.hasTalent(TALENTS_DRUID.OVERGROWTH_TALENT);
     this.hasPowerOfTheArchdruid = this.selectedCombatant.hasTalent(
       TALENTS_DRUID.POWER_OF_THE_ARCHDRUID_TALENT,
     );
@@ -147,16 +140,6 @@ class HotAttributor extends Analyzer {
     } else if (possiblePota) {
       this.hotTracker.addAttributionFromApply(this.powerOfTheArchdruidRejuvAttrib, event);
       this._logAttrib(event, this.powerOfTheArchdruidRejuvAttrib);
-    } else if (this._targetHasInsurance(event)) {
-      // Insurance reapply to target that already has Insurance procs a HoT but does NOT
-      // show an Insurance refresh event - if we get a HoT on a target with Insurance
-      // that can't be attributed to anything else, assume it was an Insurance refresh
-      this.hotTracker.addAttributionFromApply(this.tww2TierAttrib, event);
-      this._logAttrib(event, this.tww2TierAttrib);
-      DEBUG &&
-        console.log(
-          `Invisible Insurance refresh detected @ ${this.owner.formatTimestamp(event.timestamp)}`,
-        );
     } else {
       this._logAttrib(event, undefined);
     }
@@ -211,16 +194,6 @@ class HotAttributor extends Analyzer {
     } else if (possiblePota) {
       this.hotTracker.addAttributionFromApply(this.powerOfTheArchdruidRegrowthAttrib, event);
       this._logAttrib(event, this.powerOfTheArchdruidRegrowthAttrib);
-    } else if (this._targetHasInsurance(event)) {
-      // Insurance reapply to target that already has Insurance procs a HoT but does NOT
-      // show an Insurance refresh event - if we get a HoT on a target with Insurance
-      // that can't be attributed to anything else, assume it was an Insurance refresh
-      this.hotTracker.addAttributionFromApply(this.tww2TierAttrib, event);
-      this._logAttrib(event, this.tww2TierAttrib);
-      DEBUG &&
-        console.log(
-          `Invisible Insurance refresh detected @ ${this.owner.formatTimestamp(event.timestamp)}`,
-        );
     } else {
       this._logAttrib(event, undefined);
     }
@@ -270,19 +243,6 @@ class HotAttributor extends Analyzer {
     } else if (this.convokeSpirits.active && isConvoking(this.selectedCombatant)) {
       // convoke module adds the attribution for Convoke
       this._logAttrib(event, this.convokeSpirits.currentConvokeAttribution);
-    } else if (isFromOvergrowth(event)) {
-      this.hotTracker.addAttributionFromApply(this.overgrowthAttrib, event);
-      this._logAttrib(event, this.overgrowthAttrib);
-    } else if (this._targetHasInsurance(event)) {
-      // Insurance reapply to target that already has Insurance procs a HoT but does NOT
-      // show an Insurance refresh event - if we get a HoT on a target with Insurance
-      // that can't be attributed to anything else, assume it was an Insurance refresh
-      this.hotTracker.addAttributionFromApply(this.tww2TierAttrib, event);
-      this._logAttrib(event, this.tww2TierAttrib);
-      DEBUG &&
-        console.log(
-          `Invisible Insurance refresh detected @ ${this.owner.formatTimestamp(event.timestamp)}`,
-        );
     } else {
       this._logAttrib(event, undefined);
     }
@@ -298,17 +258,6 @@ class HotAttributor extends Analyzer {
     } else {
       this._logAttrib(event, undefined);
     }
-  }
-
-  private _targetHasInsurance(event: TargettedEvent<any>): boolean {
-    if (!this.hasTww2Tier4pc) {
-      return false;
-    }
-    const target = this.combatants.getEntity(event);
-    if (!target) {
-      return false;
-    }
-    return target.hasOwnBuff(SPELLS.INSURANCE_HOT_DRUID);
   }
 
   private _logAttrib(

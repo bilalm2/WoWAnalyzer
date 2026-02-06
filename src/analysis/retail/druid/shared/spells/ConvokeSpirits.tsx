@@ -236,6 +236,7 @@ class ConvokeSpirits extends Analyzer {
     };
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onHit(event: AbilityEvent<any> & TargettedEvent<any>) {
     const spellId = event.ability.guid;
 
@@ -336,6 +337,7 @@ class ConvokeSpirits extends Analyzer {
   /**
    * True iff a hit with the given traveling spellId could plausibly have come from a hardcast
    */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   wasProbablyHardcast(event: AbilityEvent<any> & TargettedEvent<any>): boolean {
     const lastCast: CastEvent | undefined = this.lastTravelingSpellCast[event.ability.guid];
     return (

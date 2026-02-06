@@ -140,17 +140,6 @@ class HotTrackerRestoDruid extends HotTracker {
         tickPeriod: 1000,
       },
       {
-        spell: SPELLS.LIFEBLOOM_UNDERGROWTH_HOT_HEAL,
-        duration: 15000,
-        tickPeriod: 1000,
-      },
-      {
-        spell: SPELLS.CENARION_WARD_HEAL,
-        duration:
-          8000 + this.selectedCombatant.getTalentRank(TALENTS_DRUID.WILDWOOD_ROOTS_TALENT) * 2000,
-        tickPeriod: 2000,
-      },
-      {
         spell: SPELLS.CULTIVATION,
         duration: 6000,
         tickPeriod: 2000,

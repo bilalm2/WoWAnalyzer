@@ -39,6 +39,7 @@ class SwiftmendNormalizer extends EventLinkNormalizer {
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function getRemovedHot(event: CastEvent): AbilityEvent<any> | undefined {
   return GetRelatedEvent(event, CONSUMED_HOT, HasAbility);
 }
