@@ -42,7 +42,6 @@ class Lifebloom extends Analyzer {
 
   constructor(options: Options) {
     super(options);
-    this.hasUndergrowth = this.selectedCombatant.hasTalent(TALENTS_DRUID.UNDERGROWTH_TALENT);
 
     this.addEventListener(
       Events.applybuff.by(SELECTED_PLAYER).spell(LIFEBLOOM_BUFFS),
@@ -141,7 +140,6 @@ class Lifebloom extends Analyzer {
   /** Guide subsection describing the proper usage of Lifebloom */
   get guideSubsection(): JSX.Element {
     const hasPhoto = this.selectedCombatant.hasTalent(TALENTS_DRUID.PHOTOSYNTHESIS_TALENT);
-    const hasUndergrowth = this.selectedCombatant.hasTalent(TALENTS_DRUID.UNDERGROWTH_TALENT);
     const hasVerdancy = this.selectedCombatant.hasTalent(TALENTS_DRUID.VERDANCY_TALENT);
     const selfUptimePercent = this.selfLifebloomUptime / this.owner.fightDuration;
     const othersUptimePercent = this.othersLifebloomUptime / this.owner.fightDuration;
@@ -152,12 +150,6 @@ class Lifebloom extends Analyzer {
           <b>
             <SpellLink spell={SPELLS.LIFEBLOOM_HOT_HEAL} />
           </b>{' '}
-          can only be active on {hasUndergrowth ? 'two targets' : 'one target'} at a time{' '}
-          {hasUndergrowth && (
-            <>
-              (due to <SpellLink spell={TALENTS_DRUID.UNDERGROWTH_TALENT} />)
-            </>
-          )}{' '}
           and provides similar throughput to Rejuvenation. However, it causes{' '}
           <SpellLink spell={SPELLS.CLEARCASTING_BUFF} /> procs and so is a big benefit to your mana
           efficiency. You should aim for 100% Lifebloom uptime.
@@ -192,14 +184,6 @@ class Lifebloom extends Analyzer {
                 blooms from the 'on-others' effect will also be very powerful
               </>
             )}
-            .
-            {hasUndergrowth && (
-              <>
-                {' '}
-                Remember that <SpellLink spell={TALENTS_DRUID.UNDERGROWTH_TALENT} /> allows two
-                lifeblooms, and both will benefit!
-              </>
-            )}
             <br />
             Total Uptime on <strong>Self: {formatPercentage(selfUptimePercent, 1)}%</strong> / on{' '}
             <strong>Others: {formatPercentage(othersUptimePercent, 1)}%</strong>
@@ -232,7 +216,7 @@ class Lifebloom extends Analyzer {
     const subBars = [];
     if (this.hasUndergrowth) {
       subBars.push({
-        spells: [TALENTS_DRUID.UNDERGROWTH_TALENT],
+        spells: [TALENTS_DRUID.LIFEBLOOM_TALENT],
         uptimes: mergeTimePeriods(this.undergrowthUptimes, this.owner.currentTimestamp),
         color: UNDERGROWTH_COLOR,
       });

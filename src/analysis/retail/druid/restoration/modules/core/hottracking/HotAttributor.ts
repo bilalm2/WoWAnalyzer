@@ -9,7 +9,7 @@ import Events, {
 import HotTracker, { Attribution } from 'parser/shared/modules/HotTracker';
 
 import { LIFEBLOOM_BUFFS, lifebloomSpell, REJUVENATION_BUFFS } from '../../../constants';
-import { isFromHardcast, isFromOvergrowth } from '../../../normalizers/CastLinkNormalizer';
+import { isFromHardcast } from '../../../normalizers/CastLinkNormalizer';
 import ConvokeSpiritsResto from 'analysis/retail/druid/restoration/modules/spells/ConvokeSpiritsResto';
 import HotTrackerRestoDruid from '../hottracking/HotTrackerRestoDruid';
 import { TALENTS_DRUID } from 'common/TALENTS';
@@ -42,7 +42,6 @@ class HotAttributor extends Analyzer {
   hotTracker!: HotTrackerRestoDruid;
   convokeSpirits!: ConvokeSpiritsResto;
 
-  hasOvergrowth: boolean;
   hasPowerOfTheArchdruid: boolean;
   hasRampantGrowth: boolean;
   hasConvoke: boolean;
@@ -71,7 +70,6 @@ class HotAttributor extends Analyzer {
   constructor(options: Options) {
     super(options);
 
-    this.hasOvergrowth = this.selectedCombatant.hasTalent(TALENTS_DRUID.OVERGROWTH_TALENT);
     this.hasPowerOfTheArchdruid = this.selectedCombatant.hasTalent(
       TALENTS_DRUID.POWER_OF_THE_ARCHDRUID_TALENT,
     );
@@ -141,9 +139,6 @@ class HotAttributor extends Analyzer {
       this.lastConvokeRejuvOrRegrowthBuffTimestamp = event.timestamp;
       // convoke module adds the attribution for Convoke
       this._logAttrib(event, this.convokeSpirits.currentConvokeAttribution);
-    } else if (isFromOvergrowth(event)) {
-      this.hotTracker.addAttributionFromApply(this.overgrowthAttrib, event);
-      this._logAttrib(event, this.overgrowthAttrib);
     } else if (possiblePota) {
       this.hotTracker.addAttributionFromApply(this.powerOfTheArchdruidRejuvAttrib, event);
       this._logAttrib(event, this.powerOfTheArchdruidRejuvAttrib);
@@ -202,9 +197,6 @@ class HotAttributor extends Analyzer {
       }
       // convoke module adds the attribution for Convoke
       this._logAttrib(event, this.convokeSpirits.currentConvokeAttribution);
-    } else if (isFromOvergrowth(event)) {
-      this.hotTracker.addAttributionFromApply(this.overgrowthAttrib, event);
-      this._logAttrib(event, this.overgrowthAttrib);
     } else if (possibleRg) {
       this.hotTracker.addAttributionFromApply(this.rampantGrowthAttrib, event);
       this._logAttrib(event, this.rampantGrowthAttrib);
@@ -270,9 +262,6 @@ class HotAttributor extends Analyzer {
     } else if (this.convokeSpirits.active && isConvoking(this.selectedCombatant)) {
       // convoke module adds the attribution for Convoke
       this._logAttrib(event, this.convokeSpirits.currentConvokeAttribution);
-    } else if (isFromOvergrowth(event)) {
-      this.hotTracker.addAttributionFromApply(this.overgrowthAttrib, event);
-      this._logAttrib(event, this.overgrowthAttrib);
     } else if (this._targetHasInsurance(event)) {
       // Insurance reapply to target that already has Insurance procs a HoT but does NOT
       // show an Insurance refresh event - if we get a HoT on a target with Insurance
@@ -292,9 +281,6 @@ class HotAttributor extends Analyzer {
     if (event.prepull || isFromHardcast(event)) {
       this.hotTracker.addAttributionFromApply(this.lbHardcastAttrib, event);
       this._logAttrib(event, 'Hardcast');
-    } else if (isFromOvergrowth(event)) {
-      this.hotTracker.addAttributionFromApply(this.overgrowthAttrib, event);
-      this._logAttrib(event, this.overgrowthAttrib);
     } else {
       this._logAttrib(event, undefined);
     }

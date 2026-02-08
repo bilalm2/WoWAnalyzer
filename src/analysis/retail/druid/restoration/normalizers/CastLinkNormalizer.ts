@@ -113,23 +113,6 @@ const EVENT_LINKS: EventLink[] = [
     maximumLinks: 1,
   },
   {
-    linkRelation: FROM_OVERGROWTH,
-    reverseLinkRelation: APPLIED_HEAL,
-    linkingEventId: [
-      SPELLS.REJUVENATION.id,
-      SPELLS.REJUVENATION_GERMINATION.id,
-      SPELLS.REGROWTH.id,
-      SPELLS.WILD_GROWTH.id,
-      SPELLS.LIFEBLOOM_HOT_HEAL.id,
-      SPELLS.LIFEBLOOM_UNDERGROWTH_HOT_HEAL.id,
-    ],
-    linkingEventType: [EventType.ApplyBuff, EventType.RefreshBuff],
-    referencedEventId: TALENTS_DRUID.OVERGROWTH_TALENT.id,
-    referencedEventType: EventType.Cast,
-    forwardBufferMs: CAST_BUFFER_MS,
-    backwardBufferMs: CAST_BUFFER_MS,
-  },
-  {
     linkRelation: FROM_EXPIRING_LIFEBLOOM,
     reverseLinkRelation: CAUSED_BLOOM,
     linkingEventId: SPELLS.LIFEBLOOM_BLOOM_HEAL.id,

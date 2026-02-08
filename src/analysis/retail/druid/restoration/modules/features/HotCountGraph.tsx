@@ -36,19 +36,10 @@ class HotCountGraph extends BuffCountGraph {
       spells: [SPELLS.REJUVENATION, SPELLS.REJUVENATION_GERMINATION],
       color: '#a010a0',
     });
-    buffSpecs.push({ spells: SPELLS.WILD_GROWTH, color: '#20b020' });
-    if (this.selectedCombatant.hasTalent(TALENTS_DRUID.CENARION_WARD_TALENT)) {
-      buffSpecs.push({ spells: SPELLS.CENARION_WARD_HEAL, color: '#44ffcc' });
-    }
+    buffSpecs.push({ spells: SPELLS.WILD_GROWTH, color: '#20b020' })
     if (isWildstalker(this.selectedCombatant)) {
       buffSpecs.push({
         spells: [SPELLS.SYMBIOTIC_BLOOMS_WILDSTALKER],
-        color: '#cc7722',
-      });
-    }
-    if (this.selectedCombatant.hasTalent(TALENTS_DRUID.ADAPTIVE_SWARM_TALENT)) {
-      buffSpecs.push({
-        spells: [SPELLS.ADAPTIVE_SWARM_HEAL, SPELLS.ADAPTIVE_SWARM_DAMAGE],
         color: '#cc7722',
       });
     }

@@ -38,8 +38,6 @@ class RestoDruidHealingEfficiencyTracker extends HealingEfficiencyTracker {
       spellInfo = this.getSmDetails(spellInfo);
     } else if (spellId === SPELLS.EFFLORESCENCE_CAST.id) {
       spellInfo = this.getEffloDetails(spellInfo);
-    } else if (spellId === TALENTS_DRUID.OVERGROWTH_TALENT.id) {
-      spellInfo = this.getOvergrowthDetails(spellInfo);
     }
 
     return spellInfo;
